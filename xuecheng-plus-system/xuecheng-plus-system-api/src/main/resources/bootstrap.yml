@@ -1,6 +1,6 @@
 spring:
   application:
-    name: content-api
+    name: system-api
   cloud:
     nacos:
       server-addr: 192.168.101.65:8848
@@ -13,7 +13,7 @@ spring:
         file-extension: yaml
         refresh-enabled: true
         extension-configs:
-          - data-id: content-api-${spring.profiles.active}.yaml
+          - data-id: system-api-${spring.profiles.active}.yaml
             group: xuecheng-plus-project
             refresh: true
         shared-configs:
