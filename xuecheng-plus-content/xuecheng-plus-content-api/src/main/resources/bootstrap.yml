@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: content-api
@@ -8,12 +9,13 @@ spring:
         namespace: dev
         group: xuecheng-plus-project
       config:
+
         namespace: dev
         group: xuecheng-plus-project
         file-extension: yaml
         refresh-enabled: true
         extension-configs:
-          - data-id: content-api-${spring.profiles.active}.yaml
+          - data-id: content-service-${spring.profiles.active}.yaml
             group: xuecheng-plus-project
             refresh: true
         shared-configs:
