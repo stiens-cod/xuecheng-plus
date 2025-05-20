@@ -317,7 +317,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 
         try (InputStream newFileInputStream = new FileInputStream(minioFile)) {
             //minio上文件的md5值
-            String md5Hex = DigestUtils.md5Hex(newFileInputStream);
+            String md5Hex = DigestUtils.md5DigestAsHex(newFileInputStream);
             //比较md5值，不一致则说明文件不完整
             if(!fileMd5.equals(md5Hex)){
                 return RestResponse.validfail(false, "文件合并校验失败，最终上传失败。");
@@ -334,7 +334,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
 
         //文件入库
-        currentProxy.addMediaFilesToDb(companyId,fileMd5,uploadFileParamsDto,bucket_videoFiles,mergeFilePath);
+        currentProxy.addMediaFilesToDb(companyId,fileMd5,uploadFileParamsDto,bucket_videoFiles,filePathByMd5);
         //=====清除分块文件=====
         clearChunkFiles(chunkFileFolderPath,chunkTotal);
         return RestResponse.success(true);
