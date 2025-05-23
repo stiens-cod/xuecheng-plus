@@ -9,10 +9,12 @@ import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
 import com.xuecheng.media.mapper.MediaFilesMapper;
 import com.xuecheng.base.model.RestResponse;
+import com.xuecheng.media.mapper.MediaProcessMapper;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
+import com.xuecheng.media.model.po.MediaProcess;
 import com.xuecheng.media.service.MediaFileService;
 import io.minio.*;
 import io.minio.messages.DeleteError;
@@ -47,6 +49,8 @@ public class MediaFileServiceImpl implements MediaFileService {
 
  @Autowired
  MediaFilesMapper mediaFilesMapper;
+    @Autowired
+    MediaProcessMapper mediaProcessMapper;
 
     @Autowired
     MediaFileService currentProxy;
@@ -131,7 +135,7 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
 
     @Transactional
-    public MediaFiles addMediaFilesToDb(Long companyId,String fileMd5,UploadFileParamsDto uploadFileParamsDto,String bucket,String objectName){
+    public MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName) {
         //从数据库查询文件
         MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
         if (mediaFiles == null) {
@@ -141,6 +145,7 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaFiles.setId(fileMd5);
             mediaFiles.setFileId(fileMd5);
             mediaFiles.setCompanyId(companyId);
+            //媒体类型
             mediaFiles.setUrl("/" + bucket + "/" + objectName);
             mediaFiles.setBucket(bucket);
             mediaFiles.setFilePath(objectName);
@@ -150,14 +155,37 @@ public class MediaFileServiceImpl implements MediaFileService {
             //保存文件信息到文件表
             int insert = mediaFilesMapper.insert(mediaFiles);
             if (insert < 0) {
-                log.error("保存文件信息到数据库失败,{}",mediaFiles.toString());
+                log.error("保存文件信息到数据库失败,{}", mediaFiles.toString());
                 XueChengPlusException.cast("保存文件信息失败");
             }
-            log.debug("保存文件信息到数据库成功,{}",mediaFiles.toString());
+            //添加到待处理任务表
+            addWaitingTask(mediaFiles);
+            log.debug("保存文件信息到数据库成功,{}", mediaFiles.toString());
 
         }
         return mediaFiles;
 
+    }
+
+    /**
+     * 添加待处理任务
+     * @param mediaFiles 媒资文件信息
+     */
+    private void addWaitingTask(MediaFiles mediaFiles){
+        //文件名称
+        String filename = mediaFiles.getFilename();
+        //文件扩展名
+        String extension = filename.substring(filename.lastIndexOf("."));
+        //文件mimeType
+        String mimeType = getMimeType(extension);
+        //如果是avi视频添加到视频待处理表
+        if(mimeType.equals("video/x-msvideo")){
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles,mediaProcess);
+            mediaProcess.setStatus("1");//未处理
+            mediaProcess.setFailCount(0);//失败次数默认为0
+            mediaProcessMapper.insert(mediaProcess);
+        }
     }
 
 
