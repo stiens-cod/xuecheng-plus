@@ -1,7 +1,9 @@
 package com.xuecheng.content.service;
 
+import com.xuecheng.base.model.BindTeachplanMediaDto;
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
+import com.xuecheng.content.model.po.TeachplanMedia;
 
 import java.util.List;
 
@@ -24,4 +26,7 @@ public interface TeachplanService {
   * @param saveTeachplanDto
   */
  public void saveTeachplan(SaveTeachplanDto saveTeachplanDto);
+
+
+ public TeachplanMedia associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
 }
