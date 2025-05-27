@@ -43,7 +43,9 @@ public class CourseBaseMapperTests {
         queryWrapper.like(StringUtils.isNotEmpty(courseParamsDto.getCourseName()),CourseBase::getName,courseParamsDto.getCourseName());
         //根据课程审核状态查询 course_base.audit_status = ?
         queryWrapper.eq(StringUtils.isNotEmpty(courseParamsDto.getAuditStatus()), CourseBase::getAuditStatus,courseParamsDto.getAuditStatus());
-        //todo:按课程发布状态查询
+        //todo:按课程发布状态查询  已解决
+        queryWrapper.eq(CourseBase::getStatus,courseParamsDto.getPublishStatus());
+
         //分页参数对象
         PageParams pageParams = new PageParams();
         pageParams.setPageNo(1L);

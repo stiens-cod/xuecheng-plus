@@ -53,7 +53,9 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         queryWrapper.like(StringUtils.isNotEmpty(courseParamsDto.getCourseName()),CourseBase::getName,courseParamsDto.getCourseName());
         //根据课程审核状态查询 course_base.audit_status = ?
         queryWrapper.eq(StringUtils.isNotEmpty(courseParamsDto.getAuditStatus()), CourseBase::getAuditStatus,courseParamsDto.getAuditStatus());
-        //todo:按课程发布状态查询
+        //todo:按课程发布状态查询  已解决
+        queryWrapper.eq(CourseBase::getStatus,courseParamsDto.getPublishStatus());
+
 
         //创建page分页参数对象，参数：当前页码，每页记录数
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
@@ -160,7 +162,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
 
         //通过courseCategoryMapper查询分类信息，将分类名称放在courseBaseInfoDto对象
-        //todo：课程分类的名称设置到courseBaseInfoDto
+        //todo：课程分类的名称设置到courseBaseInfoDto    已解决
 
         courseBaseInfoDto.setMtName(courseCategoryMapper.selectById(courseBase.getMt()).getName());
 
@@ -200,7 +202,16 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             XueChengPlusException.cast("修改课程失败");
         }
         //更新营销信息
-        //todo:更新营销信息
+        //todo:更新营销信息  已解决
+
+
+        CourseMarket courseMarket = new CourseMarket();
+
+
+        BeanUtils.copyProperties(editCourseDto,courseMarket);
+
+        saveCourseMarket(courseMarket);
+
         //查询课程信息
         CourseBaseInfoDto courseBaseInfo = getCourseBaseInfo(courseId);
 
