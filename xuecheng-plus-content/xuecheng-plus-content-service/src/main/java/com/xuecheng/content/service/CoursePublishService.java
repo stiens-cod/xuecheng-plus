@@ -31,4 +31,6 @@ public interface CoursePublishService {
     public void commitAudit(Long companyId,Long courseId);
 
 
+    public void publish(Long companyId,Long courseId);
+
 }
