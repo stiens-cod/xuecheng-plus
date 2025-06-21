@@ -21,8 +21,8 @@ spring:
           - data-id: media-service-${spring.profiles.active}.yaml
             group: xuecheng-plus-project
             refresh: true
-#          - data-id: media-api-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-project
+#          - data-id: media-api-${spring.profiles.activ}.yaml
+#            group: xuecheng-plus-projecte
 #            refresh: true
         shared-configs:
           - data-id: swagger-${spring.profiles.active}.yaml
