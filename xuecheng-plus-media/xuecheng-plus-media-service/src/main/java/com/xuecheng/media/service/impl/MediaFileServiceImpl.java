@@ -215,7 +215,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         //文件的默认目录
         String defaultFolderPath = getDefaultFolderPath();
         //存储到minio中的对象名(带目录)
-        if(StringUtils.isEmpty(objectName)){
+        if(StringUtils.isEmpty(objectName)){//更改为如果为空 则使用生成的路径
             objectName =  defaultFolderPath + fileMd5 + extension;
         }
         //将文件上传到minio
