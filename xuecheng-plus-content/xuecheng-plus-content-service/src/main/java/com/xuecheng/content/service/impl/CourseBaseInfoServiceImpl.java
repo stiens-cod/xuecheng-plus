@@ -54,7 +54,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //根据课程审核状态查询 course_base.audit_status = ?
         queryWrapper.eq(StringUtils.isNotEmpty(courseParamsDto.getAuditStatus()), CourseBase::getAuditStatus,courseParamsDto.getAuditStatus());
         //todo:按课程发布状态查询  已解决
-        queryWrapper.eq(CourseBase::getStatus,courseParamsDto.getPublishStatus());
+        queryWrapper.eq(StringUtils.isNotEmpty(courseParamsDto.getPublishStatus()),CourseBase::getStatus,courseParamsDto.getPublishStatus());
 
 
         //创建page分页参数对象，参数：当前页码，每页记录数
